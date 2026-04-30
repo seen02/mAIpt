@@ -1,6 +1,5 @@
 # 마이피티 mAIpt
 
----
 
 > 💡 **Notice**  
 > 이 레포지토리는 실제 소스 코드를 비공개 처리한 홍보용 공간입니다.  
@@ -11,7 +10,8 @@
 대표 이미지 (추가 예정)
 ## 1. 마이피티 - 내 손 안의 PT 선생님
 
-* "언제 어디서나, 내 스마트폰이 완벽한 PT 선생님이 됩니다."<br>
+* "언제 어디서나, 내 스마트폰이 완벽한 PT 선생님이 됩니다."
+
 마이피티(mAIpt)는 비싼 PT 비용과 시간적 제약 때문에 운동을 망설이는 분들을 위해 탄생한 AI 기반 스마트 홈트레이닝 앱입니다.
 단순히 운동 영상을 틀어놓고 따라 하는 것을 넘어, 스마트폰 카메라를 통해 사용자의 관절 움직임을 실시간으로 분석하고 올바른 자세를 코칭해 줍니다.
 여기에 생성형 AI(Gemini)가 결합되어, 내 운동 기록을 바탕으로 오늘 내게 딱 맞는 운동 플랜과 피드백을 제공합니다.
@@ -19,32 +19,69 @@
 
 <br>
 
-## 2. 핵심 기능 (Core Features)
+## 2. 핵심 기능
 
-* **실시간 자세 추적 및 AI 피드백**
-  * 모바일 기기 자체(On-device)에서 사용자의 관절 좌표를 실시간으로 추출해 횟수 카운트, 자세 정확도를 제공해요.
-  * AI가 운동 결과를 기반으로 한 운동 분석 리포트를 제공해요.
-![앱 시연화면](./assets/demo-video.gif)
+<!-- 첫 번째 줄 (2개 배치) -->
+<table width="100%">
+  <tr>
+    <td width="50%" align="center" valign="top">
+      <img src="./assets/app-image/exercise.png" width="220" alt="실시간 자세 추적"><br><br>
+      <div align="left">
+        <b>🏃‍♂️ 실시간 자세 추적 및 AI 피드백</b>
+        <ul>
+          <li>모바일 기기 자체(On-device)에서 사용자의 관절 좌표를 실시간으로 추출해 횟수 카운트, 자세 정확도를 제공해요.</li>
+          <li>AI가 운동 결과를 기반으로 한 운동 분석 리포트를 제공해요.</li>
+        </ul>
+      </div>
+    </td>
+    <td width="50%" align="center" valign="top">
+      <img src="./assets/app-image/routine.png" width="220" alt="루틴 저장"><br><br>
+      <div align="left">
+        <b>📝 운동 루틴 저장 및 공유</b>
+        <ul>
+          <li>사용자가 운동 루틴을 생성하고 저장할 수 있어요.</li>
+          <li>다른 사용자나 운영자가 생성한 루틴을 불러올 수 있어요.</li>
+        </ul>
+      </div>
+    </td>
+  </tr>
+</table>
 
-* **운동 루틴 저장 및 공유**
-  * 사용자가 운동 루틴을 생성하고 저장할 수 있어요.
-  * 다른 사용자나 운영자가 생성한 루틴을 불러올 수 있어요.
-![앱 시연화면](./assets/demo-video.gif)
-
-* **캘린더**
-  * 나의 운동 기록을 캘린더에서 모아 볼 수 있어요.
-  * 새로운 운동 계획을 세울 수 있어요.
-  * AI 운동 분석 리포트도 확인할 수 있어요.
-![앱 시연화면](./assets/demo-video.gif)
-
-* **운동 기록 분석**
-  * 주간 칼로리 소모 패턴, 부위별 운동 비율 등의 운동 기록에 대한 분석을 제공해요.
-![앱 시연화면](./assets/demo-video.gif)
-
-* **커뮤니티**
-  * 운동 기록과 사진을 게시글로 공유할 수 있어요.
-  * 댓글과 좋아요를 남길 수 있어요.
-![앱 시연화면](./assets/demo-video.gif)
+<!-- 두 번째 줄 (3개 배치) -->
+<table width="100%">
+  <tr>
+    <td width="33%" align="center" valign="top">
+      <img src="./assets/app-image/calendar.png" width="200" alt="캘린더"><br><br>
+      <div align="left">
+        <b>📅 캘린더</b>
+        <ul>
+          <li>나의 운동 기록을 캘린더에서 모아 볼 수 있어요.</li>
+          <li>새로운 운동 계획을 세울 수 있어요.</li>
+          <li>AI 운동 분석 리포트도 확인할 수 있어요.</li>
+        </ul>
+      </div>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <img src="./assets/app-image/analysis.png" width="200" alt="운동 분석"><br><br>
+      <div align="left">
+        <b>📊 운동 기록 분석</b>
+        <ul>
+          <li>주간 칼로리 소모 패턴, 부위별 운동 비율 등의 운동 기록에 대한 분석을 제공해요.</li>
+        </ul>
+      </div>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <img src="./assets/app-image/community.png" width="200" alt="커뮤니티"><br><br>
+      <div align="left">
+        <b>🤝 커뮤니티</b>
+        <ul>
+          <li>운동 기록과 사진을 게시글로 공유할 수 있어요.</li>
+          <li>댓글과 좋아요를 남길 수 있어요.</li>
+        </ul>
+      </div>
+    </td>
+  </tr>
+</table>
 
 <br>
 
