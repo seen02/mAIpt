@@ -1,0 +1,115 @@
+services:
+  # 1. Spring Boot (Main Backend)
+  spring-backend:
+    build: ./spring-backend/api-server
+    ports:
+      - "8080:8080"
+    environment:
+      #local(docker-compose 파일) 또는 prod(docker-compose-prod 파일) 환경 지정
+      - SPRING_PROFILES_ACTIVE=local
+
+      # 구글 OAuth 설정
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+
+      # MySQL 설정
+      # allowPublicKeyRetrieval=true는 로컬 개발 환경에서 접속 오류 방지를 위해 자주 사용됩니다.
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/myappdb?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=myuser
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_USER_PW}
+
+      # Redis 설정
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+
+      # AWS/MinIO 설정
+      - AWS_S3_ENDPOINT=http://minio:9000  # 도커 내부 통신용
+      - AWS_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - AWS_SECRET_KEY=${MINIO_SECRET_KEY}
+      - AWS_REGION=us-east-1
+      - AWS_BUCKET_NAME=my-bucket
+
+      # AI 서버 설정
+      - AI_SERVER_URL=http://ai-server:8000
+
+      # JWT 설정
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_EXPIRATION_TIME=${JWT_EXPIRATION_TIME}
+      - JWT_REFRESH_EXPIRATION=${JWT_REFRESH_EXPIRATION}
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+      minio:
+        condition: service_started
+
+# 2. AI Server (FastAPI)
+  ai-server:
+    build: ./ai-server
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ai-server:/app
+    # 코드 변경을 즉각 반영하기 위한 핫 리로드 명령어
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      # DB 설정 제거 및 구글 AI API 키 주입
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+
+  # 3. Database (MySQL 8.0) - [전체 변경]
+  mysql-db:
+    image: mysql:8.0
+    ports:
+      - "3307:3306" # MySQL 기본 포트
+    environment:
+      # MySQL은 Root 패스워드 설정이 필수입니다.
+      - MYSQL_DATABASE=myappdb
+      - MYSQL_USER=myuser
+      - MYSQL_PASSWORD=${MYSQL_USER_PW}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PW}
+    # (선택) 문자열 인코딩 문제 방지를 위한 설정 명령어
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 4. Database (Redis)
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # 5. Storage (MinIO - S3 Compatible)
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"  # API 포트 (코드에서 접근)
+      - "9001:9001"  # 콘솔 포트 (웹 브라우저 관리자 페이지)
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+  # (선택사항) MinIO 시작 시 버킷 자동 생성용 컨테이너
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc alias set myminio http://minio:9000 ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}) do echo '...waiting...' && sleep 1; done;
+      /usr/bin/mc mb myminio/my-bucket;
+      /usr/bin/mc policy set public myminio/my-bucket;
+      exit 0;
+      "
+
+volumes:
+  mysql_data:
+  redis_data:
+  minio_data:
