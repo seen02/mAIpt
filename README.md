@@ -157,7 +157,7 @@
 <br>
 
 ## 7. 상세 문서 바로가기
-* 🔗 [상세 API 명세서 확인하기](./docs/API_명세서.md)
+* 🔗 [상세 API 명세서 확인하기](./docs/API_spec.md)
 * 🐳 [인프라 배포 설정 확인하기](./builds/docker-compose.yml)
 
 ---
