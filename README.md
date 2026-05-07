@@ -1,3 +1,5 @@
+<img src="./assets/app-image/icon_white.png" width="220" alt="아이콘">
+
 # 마이피티 mAIpt
 
 
@@ -7,7 +9,6 @@
 
 <br>
 
-대표 이미지 (추가 예정)
 ## 1. 마이피티 - 내 손 안의 PT 선생님
 
 * "언제 어디서나, 내 스마트폰이 완벽한 PT 선생님이 됩니다."
