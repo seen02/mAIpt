@@ -102,49 +102,86 @@
 실제 개발 저장소(Private)의 메인 서버(Spring Boot) 핵심 폴더 구조입니다. 계층형/도메인형 아키텍처를 적용하여 관심사를 분리했습니다.
 
 ```text
-📦 src/main/java/com/maipt/app
-┣ 📂 domain               # 핵심 비즈니스 도메인 (Entity, Enum 등)
-┃ ┣ 📂 auth
-┃ ┣ 📂 member
-┃ ┣ 📂 program
-┃ ┣ 📂 workout
-┃ ┣ 📂 analysis
-┃ ┗ 📂 community
-┃
-┣ 📂 application          # 비즈니스 로직 처리 (Service)
-┃ ┣ 📂 auth
-┃ ┣ 📂 member
-┃ ┣ 📂 program
-┃ ┣ 📂 workout
-┃ ┣ 📂 analysis
-┃ ┗ 📂 community
-┃
-┣ 📂 interfaces           # 외부 요청 처리 (Controller, Request/Response DTO)
-┃ ┣ 📂 auth
-┃ ┣ 📂 member
-┃ ┣ 📂 program
-┃ ┣ 📂 workout
-┃ ┣ 📂 analysis
-┃ ┗ 📂 community
-┃
-┗ 📂 infra                # DB 접근, 외부 API 연동, 전역 설정 (Repository, Client, Config)
-  ┣ 📂 repository         # JPA 및 QueryDSL 접근 (DB)
-  ┃ ┣ 📂 auth
-  ┃ ┣ 📂 member
-  ┃ ┣ 📂 program
-  ┃ ┣ 📂 workout
-  ┃ ┣ 📂 analysis
-  ┃ ┗ 📂 community
-  ┣ 📂 global             # 전역 공통 설정 및 예외 처리
-  ┃ ┣ 📂 config
-  ┃ ┣ 📂 error
-  ┃ ┣ 📂 common
-  ┃ ┗ 📂 util
-  ┣ 📂 security           # JWT, 커스텀 인증 등 (기존 auth/jwt 포함)
-  ┗ 📂 external           # 외부 시스템 연동
-    ┣ 📂 s3
-    ┣ 📂 fcm
-    ┗ 📂 ai
+📦 src/main/java/com/maipt/api
+┣ 📄 ApiServerApplication.java       # Spring Boot 애플리케이션 진입점
+
+┣ 📂 domain                         # 도메인별 핵심 기능 묶음
+┃ ┣ 📂 analysis                     # 운동/활동 분석 기능
+┃ ┃ ┣ 📂 controller                 # 분석 API 요청 처리
+┃ ┃ ┣ 📂 dto                        # 분석 요청/응답 데이터 객체
+┃ ┃ ┗ 📂 service                    # 분석 비즈니스 로직
+┃ ┣ 📂 auth                         # 로그인, 토큰, 인증 관련 기능
+┃ ┃ ┣ 📂 controller                 # 인증 API 요청 처리
+┃ ┃ ┣ 📂 dto                        # 로그인/토큰/탈퇴 요청·응답 DTO
+┃ ┃ ┣ 📂 entity                     # 인증 관련 엔티티
+┃ ┃ ┣ 📂 jwt                        # JWT 발급, 검증, 필터
+┃ ┃ ┣ 📂 repository                 # 인증 데이터 저장소
+┃ ┃ ┗ 📂 service                    # 인증 비즈니스 로직
+┃ ┣ 📂 community                    # 게시글, 댓글, 좋아요 기능
+┃ ┃ ┣ 📂 controller                 # 커뮤니티 API 요청 처리
+┃ ┃ ┣ 📂 dto                        # 커뮤니티 요청/응답 DTO
+┃ ┃ ┃ ┣ 📂 req                      # 요청 DTO
+┃ ┃ ┃ ┗ 📂 res                      # 응답 DTO
+┃ ┃ ┣ 📂 entity                     # 게시글/댓글/좋아요 엔티티
+┃ ┃ ┣ 📂 repository                 # 커뮤니티 데이터 접근
+┃ ┃ ┗ 📂 service                    # 커뮤니티 비즈니스 로직
+┃ ┣ 📂 member                       # 회원, 프로필, 친구 관계 기능
+┃ ┃ ┣ 📂 controller                 # 회원 API 요청 처리
+┃ ┃ ┣ 📂 dto                        # 회원 요청/응답 DTO
+┃ ┃ ┣ 📂 entity                     # 회원/프로필/친구 엔티티
+┃ ┃ ┃ ┗ 📂 enumtype                 # 회원 관련 Enum
+┃ ┃ ┣ 📂 repository                 # 회원 데이터 접근
+┃ ┃ ┗ 📂 service                    # 회원 비즈니스 로직
+┃ ┣ 📂 program                      # 운동 프로그램, 운동 종목 기능
+┃ ┃ ┣ 📂 controller                 # 프로그램 API 요청 처리
+┃ ┃ ┃ ┗ 📂 admin                    # 관리자용 프로그램 API
+┃ ┃ ┣ 📂 dto                        # 프로그램 요청/응답 DTO
+┃ ┃ ┃ ┣ 📂 request                  # 요청 DTO
+┃ ┃ ┃ ┗ 📂 response                 # 응답 DTO
+┃ ┃ ┣ 📂 entity                     # 프로그램/운동/카테고리 엔티티
+┃ ┃ ┣ 📂 repository                 # 프로그램 데이터 접근
+┃ ┃ ┗ 📂 service                    # 프로그램 비즈니스 로직
+┃ ┃   ┗ 📂 admin                    # 관리자용 프로그램 로직
+┃ ┣ 📂 report                       # 신고 기능
+┃ ┃ ┣ 📂 controller                 # 신고 API 요청 처리
+┃ ┃ ┣ 📂 dto                        # 신고 요청/응답 DTO
+┃ ┃ ┃ ┣ 📂 req                      # 요청 DTO
+┃ ┃ ┃ ┗ 📂 res                      # 응답 DTO
+┃ ┃ ┣ 📂 entity                     # 신고 엔티티
+┃ ┃ ┃ ┗ 📂 enumtype                 # 신고 상태/사유/대상 Enum
+┃ ┃ ┣ 📂 repository                 # 신고 데이터 접근
+┃ ┃ ┗ 📂 service                    # 신고 비즈니스 로직
+┃ ┗ 📂 workout                      # 운동 세션, 운동 기록 기능
+┃   ┣ 📂 ai                         # AI 운동 분석 리포트 기능
+┃   ┃ ┣ 📂 controller               # AI 분석 리포트 API 요청 처리
+┃   ┃ ┣ 📂 dto                      # AI 분석 요청/응답 DTO
+┃   ┃ ┃ ┣ 📂 req                    # 요청 DTO
+┃   ┃ ┃ ┗ 📂 res                    # 응답 DTO
+┃   ┃ ┣ 📂 entity                   # AI 분석 리포트 엔티티
+┃   ┃ ┣ 📂 repository               # AI 분석 데이터 접근
+┃   ┃ ┗ 📂 service                  # AI 분석 비즈니스 로직
+┃   ┣ 📂 controller                 # 운동 세션 API 요청 처리
+┃   ┣ 📂 dto                        # 운동 세션 요청/응답 DTO
+┃   ┣ 📂 entity                     # 운동 세션/세트 엔티티
+┃   ┣ 📂 repository                 # 운동 데이터 접근
+┃   ┗ 📂 service                    # 운동 비즈니스 로직
+
+┣ 📂 global                         # 전역 공통 기능
+┃ ┣ 📂 auth                         # Spring Security 사용자 인증 연동
+┃ ┣ 📂 common                       # 공통 응답, 공통 엔티티
+┃ ┣ 📂 config                       # Security, JPA, Swagger, S3 등 설정
+┃ ┣ 📂 error                        # 전역 예외 처리 및 에러 코드
+┃ ┗ 📂 util                         # 날짜 등 공통 유틸리티
+
+┗ 📂 infra                          # 외부 시스템 및 인프라 연동
+  ┣ 📂 ai                           # FastAPI 기반 AI 서버 연동
+  ┃ ┣ 📂 client                     # AI 서버 호출 클라이언트
+  ┃ ┣ 📂 config                     # AI 연동 WebClient 설정
+  ┃ ┗ 📂 dto                        # AI 서버 요청/응답 DTO
+  ┃   ┣ 📂 req                      # AI 서버 요청 DTO
+  ┃   ┗ 📂 res                      # AI 서버 응답 DTO
+  ┗ 📂 s3                           # AWS S3 이미지/파일 업로드 연동
+    ┗ 📂 admin                      # 관리자용 파일 업로드 API
 ```
 
 <br>
