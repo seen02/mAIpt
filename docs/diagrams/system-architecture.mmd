@@ -1,0 +1,49 @@
+%%{init: {"theme":"base","themeVariables":{"background":"#FFFFFF","mainBkg":"#FFFFFF","clusterBkg":"#FFFFFF","clusterBorder":"#CBD5E1","fontFamily":"Pretendard, Malgun Gothic, Inter, sans-serif","primaryTextColor":"#111827","lineColor":"#475569","edgeLabelBackground":"#FFFFFF"},"flowchart":{"curve":"basis","htmlLabels":true,"useMaxWidth":true}}}%%
+flowchart TB
+  subgraph ROOT[" "]
+    direction TB
+
+    subgraph SCREEN["화면"]
+      APP["모바일 앱<br/>운동 수행<br/>자세 측정<br/>기록 확인"]
+      ADMIN["관리자 웹<br/>운동 관리<br/>사용자/신고 관리<br/>AI 정책 관리"]
+    end
+
+    subgraph SERVER["운영 서버"]
+      NGINX["Nginx<br/>HTTPS 요청을<br/>알맞은 서버로 전달"]
+      API["API 서버<br/>로그인, 회원<br/>루틴, 운동 기록<br/>커뮤니티 처리"]
+      AI["AI 분석 서버<br/>운동 결과를<br/>분석 리포트로 변환"]
+      CACHE["Redis<br/>로그인 토큰 보관"]
+    end
+
+    subgraph STORAGE["저장소"]
+      DB["MySQL<br/>회원, 루틴<br/>운동 기록<br/>AI 리포트 저장"]
+      FILE["S3<br/>프로필 이미지<br/>게시글 이미지<br/>운동 이미지 저장"]
+    end
+
+    subgraph OUTSIDE["외부 연동"]
+      GOOGLE["Google OAuth<br/>소셜 로그인"]
+      GEMINI["Gemini<br/>AI 리포트 문장 생성"]
+      DEPLOY["GitHub Actions / GHCR<br/>서버 이미지 빌드<br/>운영 서버 배포"]
+    end
+
+  APP -->|앱 요청| NGINX
+  ADMIN -->|관리 요청| NGINX
+  NGINX -->|API 요청| API
+  API -->|데이터 저장/조회| DB
+  API -->|이미지 업로드| FILE
+  API -->|토큰 확인| CACHE
+  API -->|소셜 로그인| GOOGLE
+  API -->|리포트 생성 요청| AI
+  AI -->|문장 생성| GEMINI
+  DEPLOY -->|이미지 배포| API
+  end
+
+  classDef screen fill:#E0F2FE,stroke:#0284C7,color:#0F172A;
+  classDef server fill:#ECFDF5,stroke:#059669,color:#064E3B;
+  classDef storage fill:#FEF3C7,stroke:#D97706,color:#78350F;
+  classDef outside fill:#F5F3FF,stroke:#7C3AED,color:#2E1065;
+  class APP,ADMIN screen;
+  class NGINX,API,AI,CACHE server;
+  class DB,FILE storage;
+  class GOOGLE,GEMINI,DEPLOY outside;
+  style ROOT fill:#FFFFFF,stroke:#FFFFFF,color:#FFFFFF;
