@@ -18,6 +18,19 @@
 
 <br>
 
+## Tech Stack
+
+| Area | Stack |
+| --- | --- |
+| Mobile App | Flutter, Dart, Riverpod, Dio, GoRouter, flutter_secure_storage, Google Sign-In, MediaPipe Pose local package, Flutter TTS |
+| Backend API | Java 21, Spring Boot 4.0.1, Spring Security, Spring Data JPA, QueryDSL, WebFlux WebClient, Spring Data Redis, springdoc-openapi |
+| AI Server | Python 3.11, FastAPI, Uvicorn, Pydantic, google-genai, Gemini 2.5 Flash, rule-based fallback |
+| Admin Web | React 19, TypeScript, Vite 7, React Router, Axios, lucide-react |
+| Database & Storage | MySQL 8, AWS RDS, Redis, AWS S3, MinIO for local S3-compatible storage |
+| Infra & Delivery | Docker Compose, GHCR, GitHub Actions CI/CD, AWS EC2, AWS Security Group automation, host Nginx reverse proxy |
+
+<br>
+
 ## Key Features
 
 <!-- 첫 번째 줄 (2개 배치) -->
@@ -28,8 +41,8 @@
       <div align="left">
         <b>🏃‍♂️ 실시간 자세 추적 및 AI 피드백</b>
         <ul>
-          <li>모바일 기기 자체(On-device)에서 사용자의 관절 좌표를 실시간으로 추출해 횟수 카운트, 자세 정확도를 제공해요.</li>
-          <li>AI가 운동 결과를 기반으로 한 운동 분석 리포트를 제공해요.</li>
+          <li>모바일 기기 자체(On-device)에서 사용자의 관절 좌표를 실시간으로 추출해 횟수 카운트, 자세 정확도를 제공합니다.</li>
+          <li>AI가 운동 결과를 기반으로 한 운동 분석 리포트를 제공합니다.</li>
         </ul>
       </div>
     </td>
@@ -38,8 +51,8 @@
       <div align="left">
         <b>📝 운동 루틴 저장 및 공유</b>
         <ul>
-          <li>사용자가 운동 루틴을 생성하고 저장할 수 있어요.</li>
-          <li>다른 사용자나 운영자가 생성한 루틴을 불러올 수 있어요.</li>
+          <li>사용자가 운동 루틴을 생성하고 저장합니다.</li>
+          <li>다른 사용자나 운영자가 생성한 루틴을 불러올 수 있습니다.</li>
         </ul>
       </div>
     </td>
@@ -54,9 +67,9 @@
       <div align="left">
         <b>📅 캘린더</b>
         <ul>
-          <li>나의 운동 기록을 캘린더에서 모아 볼 수 있어요.</li>
-          <li>새로운 운동 계획을 세울 수 있어요.</li>
-          <li>AI 운동 분석 리포트도 확인할 수 있어요.</li>
+          <li>나의 운동 기록을 캘린더에서 모아 볼 수 있습니다.</li>
+          <li>새로운 운동 계획을 세울 수 있습니다.</li>
+          <li>AI 운동 분석 리포트도 확인할 수 있습니다.</li>
         </ul>
       </div>
     </td>
@@ -65,7 +78,7 @@
       <div align="left">
         <b>📊 운동 기록 분석</b>
         <ul>
-          <li>주간 칼로리 소모 패턴, 부위별 운동 비율 등의 운동 기록에 대한 분석을 제공해요.</li>
+          <li>주간 칼로리 소모 패턴, 부위별 운동 비율 등의 운동 기록에 대한 분석을 제공합니다.</li>
         </ul>
       </div>
     </td>
@@ -74,26 +87,13 @@
       <div align="left">
         <b>🤝 커뮤니티</b>
         <ul>
-          <li>운동 기록과 사진을 게시글로 공유할 수 있어요.</li>
-          <li>댓글과 좋아요를 남길 수 있어요.</li>
+          <li>운동 기록과 사진을 게시글로 공유할 수 있습니다.</li>
+          <li>댓글과 좋아요를 남길 수 있습니다.</li>
         </ul>
       </div>
     </td>
   </tr>
 </table>
-
-<br>
-
-## Tech Stack
-
-| Area | Stack |
-| --- | --- |
-| Mobile App | Flutter, Dart, Riverpod, Dio, GoRouter, flutter_secure_storage, Google Sign-In, MediaPipe Pose local package, Flutter TTS |
-| Backend API | Java 21, Spring Boot 4.0.1, Spring Security, Spring Data JPA, QueryDSL, WebFlux WebClient, Spring Data Redis, springdoc-openapi |
-| AI Server | Python 3.11, FastAPI, Uvicorn, Pydantic, google-genai, Gemini 2.5 Flash, rule-based fallback |
-| Admin Web | React 19, TypeScript, Vite 7, React Router, Axios, lucide-react |
-| Database & Storage | MySQL 8, AWS RDS, Redis, AWS S3, MinIO for local S3-compatible storage |
-| Infra & Delivery | Docker Compose, GHCR, GitHub Actions CI/CD, AWS EC2, AWS Security Group automation, host Nginx reverse proxy |
 
 <br>
 
@@ -108,14 +108,14 @@ flowchart TB
     direction TB
 
     subgraph SCREEN["화면"]
-      APP["Flutter 모바일 앱<br/>운동 수행<br/>자세 측정<br/>기록 확인"]
-      ADMIN["React 관리자 웹<br/>운동 관리<br/>사용자/신고 관리<br/>AI 정책 관리"]
+      APP["모바일 앱<br/>운동 수행<br/>자세 측정<br/>기록 확인"]
+      ADMIN["관리자 웹<br/>운동 관리<br/>사용자/신고 관리<br/>AI 정책 관리"]
     end
 
     subgraph SERVER["운영 서버"]
       NGINX["Nginx<br/>HTTPS 요청을<br/>알맞은 서버로 전달"]
-      API["Spring Boot 서버<br/>로그인, 회원<br/>루틴, 운동 기록<br/>커뮤니티 처리"]
-      AI["FastAPI 서버<br/>운동 결과를<br/>분석 리포트로 변환"]
+      API["API 서버<br/>로그인, 회원<br/>루틴, 운동 기록<br/>커뮤니티 처리"]
+      AI["AI 분석 서버<br/>운동 결과를<br/>분석 리포트로 변환"]
       CACHE["Redis<br/>로그인 토큰 보관"]
     end
 
@@ -133,7 +133,6 @@ flowchart TB
   APP -->|앱 요청| NGINX
   ADMIN -->|관리 요청| NGINX
   NGINX -->|API 요청| API
-  NGINX -->|정적 페이지| HOME
   API -->|데이터 저장/조회| DB
   API -->|이미지 업로드| FILE
   API -->|토큰 확인| CACHE
@@ -147,7 +146,7 @@ flowchart TB
   classDef server fill:#ECFDF5,stroke:#059669,color:#064E3B;
   classDef storage fill:#FEF3C7,stroke:#D97706,color:#78350F;
   classDef outside fill:#F5F3FF,stroke:#7C3AED,color:#2E1065;
-  class APP,ADMIN,HOME screen;
+  class APP,ADMIN screen;
   class NGINX,API,AI,CACHE server;
   class DB,FILE storage;
   class GOOGLE,GEMINI,DEPLOY outside;
@@ -201,93 +200,6 @@ AI 리포트는 외부 LLM 호출에 의존하므로 timeout, 빈 응답, 형식
 ## Database Design
 
 Mermaid 원본 파일: [docs/diagrams/erd.mmd](./docs/diagrams/erd.mmd)
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"fontFamily":"Pretendard, Inter, sans-serif","primaryTextColor":"#111827","lineColor":"#475569"},"flowchart":{"curve":"basis","htmlLabels":true}}}%%
-flowchart LR
-  subgraph Identity["Identity & Profile"]
-    MEMBERS["members<br/>id PK<br/>email UQ<br/>nickname, role<br/>provider, status<br/>deleted_at"]
-    PROFILES["profiles<br/>id PK<br/>member_id FK<br/>privacy, gender<br/>height, weight<br/>goal, experience"]
-    MEMBER_SETTINGS["member_settings<br/>id PK<br/>member_id FK<br/>push, marketing<br/>unit, theme<br/>community rules"]
-    FRIENDSHIPS["friendships<br/>id PK<br/>requester_id FK<br/>addressee_id FK<br/>status"]
-  end
-
-  subgraph Catalog["Program Catalog"]
-    CATEGORIES["categories<br/>id PK<br/>name UQ<br/>order_index"]
-    EXERCISES["exercises<br/>id PK<br/>category_id FK<br/>name, description<br/>image_url, is_active"]
-    PROGRAMS["programs<br/>id PK<br/>creator_id FK nullable<br/>source_program_id<br/>title, difficulty<br/>is_public, copied_count"]
-    PROGRAM_EXERCISES["program_exercises<br/>id PK<br/>program_id FK<br/>exercise_id FK<br/>order_index<br/>target_sets/reps/rest"]
-    PROGRAM_SAVES["program_saves<br/>id PK<br/>member_id FK<br/>program_id FK"]
-  end
-
-  subgraph WorkoutAI["Workout & AI Reports"]
-    WORKOUT_SESSIONS["workout_sessions<br/>id PK<br/>user_id FK<br/>program_id FK nullable<br/>status, scheduled_at<br/>volume, time, calories"]
-    WORKOUT_SETS["workout_sets<br/>id PK<br/>session_id FK<br/>exercise_id FK<br/>set_number, weight<br/>reps, rpe, rest"]
-    AI_REPORTS["ai_analysis_reports<br/>id UUID PK<br/>workout_session_id UQ<br/>status, total_score<br/>coaching_mode<br/>source, model, fallback"]
-    AI_DETAILS["ai_analysis_details<br/>detail_id PK<br/>report_id FK<br/>exercise_id logical<br/>feedback_type, accuracy<br/>summary, analysis JSON"]
-    AI_SETTINGS["ai_generation_settings<br/>id PK singleton<br/>report_enabled<br/>user/global limits<br/>disabled_reason"]
-    AI_DAILY["ai_report_daily_usage<br/>id PK<br/>member_id FK<br/>usage_date<br/>used_count, daily_limit<br/>UQ member + date"]
-    AI_GLOBAL["ai_report_global_daily_usage<br/>id PK<br/>usage_date UQ<br/>used_count, daily_limit"]
-  end
-
-  subgraph Community["Community & Moderation"]
-    POSTS["posts<br/>id PK<br/>user_id FK<br/>session_id FK nullable<br/>content, type<br/>image_url, deleted_at"]
-    COMMENTS["comments<br/>id PK<br/>post_id FK<br/>user_id FK<br/>content"]
-    POST_LIKES["post_likes<br/>id PK<br/>post_id FK<br/>user_id FK"]
-    REPORTS["reports<br/>id PK<br/>reporter_id FK<br/>target_type<br/>target_id<br/>reason, status"]
-  end
-
-  subgraph Operations["Operations"]
-    APP_VERSION["app_version_policy<br/>platform PK<br/>latest_version<br/>minimum_version<br/>message, store_url<br/>updated_by_admin_id"]
-  end
-
-  MEMBERS -->|1 : 1| PROFILES
-  MEMBERS -->|1 : 1| MEMBER_SETTINGS
-  MEMBERS -->|1 : N requester| FRIENDSHIPS
-  MEMBERS -->|1 : N addressee| FRIENDSHIPS
-  MEMBERS -->|1 : N creator| PROGRAMS
-  MEMBERS -->|1 : N| PROGRAM_SAVES
-  MEMBERS -->|1 : N| WORKOUT_SESSIONS
-  MEMBERS -->|1 : N| AI_DAILY
-  MEMBERS -->|1 : N| POSTS
-  MEMBERS -->|1 : N| COMMENTS
-  MEMBERS -->|1 : N| POST_LIKES
-  MEMBERS -->|1 : N reporter| REPORTS
-  MEMBERS -.->|admin updates| AI_SETTINGS
-  MEMBERS -.->|admin updates| APP_VERSION
-
-  CATEGORIES -->|1 : N| EXERCISES
-  PROGRAMS -->|1 : N| PROGRAM_EXERCISES
-  EXERCISES -->|1 : N| PROGRAM_EXERCISES
-  PROGRAMS -->|1 : N| PROGRAM_SAVES
-  PROGRAMS -->|1 : N optional| WORKOUT_SESSIONS
-
-  WORKOUT_SESSIONS -->|1 : N| WORKOUT_SETS
-  EXERCISES -->|1 : N| WORKOUT_SETS
-  WORKOUT_SESSIONS -->|1 : 0..1| AI_REPORTS
-  AI_REPORTS -->|1 : N| AI_DETAILS
-  EXERCISES -.->|logical exercise_id| AI_DETAILS
-  AI_SETTINGS -.->|sets limits| AI_DAILY
-  AI_SETTINGS -.->|sets limits| AI_GLOBAL
-
-  WORKOUT_SESSIONS -->|0..1 : 1 attached| POSTS
-  POSTS -->|1 : N| COMMENTS
-  POSTS -->|1 : N| POST_LIKES
-  REPORTS -.->|polymorphic target| POSTS
-  REPORTS -.->|polymorphic target| COMMENTS
-  REPORTS -.->|polymorphic target| MEMBERS
-
-  classDef identity fill:#E0F2FE,stroke:#0284C7,color:#0F172A;
-  classDef catalog fill:#ECFDF5,stroke:#059669,color:#064E3B;
-  classDef workout fill:#FEF3C7,stroke:#D97706,color:#78350F;
-  classDef community fill:#FCE7F3,stroke:#DB2777,color:#831843;
-  classDef ops fill:#F1F5F9,stroke:#64748B,color:#0F172A;
-  class MEMBERS,PROFILES,MEMBER_SETTINGS,FRIENDSHIPS identity;
-  class CATEGORIES,EXERCISES,PROGRAMS,PROGRAM_EXERCISES,PROGRAM_SAVES catalog;
-  class WORKOUT_SESSIONS,WORKOUT_SETS,AI_REPORTS,AI_DETAILS,AI_SETTINGS,AI_DAILY,AI_GLOBAL workout;
-  class POSTS,COMMENTS,POST_LIKES,REPORTS community;
-  class APP_VERSION ops;
-```
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"background":"#FFFFFF","mainBkg":"#FFFFFF","clusterBkg":"#FFFFFF","clusterBorder":"#CBD5E1","fontFamily":"Pretendard, Inter, sans-serif","primaryTextColor":"#111827","lineColor":"#475569","edgeLabelBackground":"#FFFFFF"},"flowchart":{"curve":"basis","htmlLabels":true,"useMaxWidth":true}}}%%
