@@ -386,7 +386,7 @@ GitHub Actions CD는 `main` push 또는 수동 실행 시 변경된 서버 이�
 
 | Name | Responsibility | GitHub |
 | --- | --- | --- |
-| 강신정 | PM, Backend, DevOps, architecture documentation | [seen02](https://github.com/seen02) |
+| 강신정 | PM, Backend, AI server advancement, DevOps, Admin web, architecture documentation | [seen02](https://github.com/seen02) |
 | 김용준 | Frontend, AI server integration | [kyjglobal](https://github.com/kyjglobal) |
 | 이종혁 | MediaPipe pose tracking implementation | - |
 | 이승현 | AI model and analysis logic | - |
