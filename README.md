@@ -31,7 +31,7 @@
 
 | Area | Stack |
 | --- | --- |
-| Mobile App | Flutter, Dart, Riverpod, Dio, GoRouter, flutter_secure_storage, Google Sign-In, MediaPipe Pose local package, Flutter TTS |
+| Mobile App | Flutter, Dart, Riverpod, Dio, Navigator, flutter_secure_storage, Google Sign-In, MediaPipe Pose local package, Flutter TTS |
 | Backend API | Java 21, Spring Boot 4.0.1, Spring Security, Spring Data JPA, QueryDSL, WebFlux WebClient, Spring Data Redis, springdoc-openapi |
 | AI Server | Python 3.11, FastAPI, Uvicorn, Pydantic, google-genai, Gemini 2.5 Flash, rule-based fallback |
 | Admin Web | React 19, TypeScript, Vite 7, React Router, Axios, lucide-react |
@@ -179,6 +179,74 @@ flowchart TB
 
 <br>
 
+## Frontend Architecture
+
+Flutter 앱은 화면, 상태 관리, API 통신을 구분해 구성했습니다. 화면은 Riverpod Provider/FutureProvider를 통해 데이터를 읽고, 기능별 Repository가 Dio로 API를 호출한 뒤 응답을 모델로 변환합니다.
+
+| 구성 | 역할 |
+| --- | --- |
+| Screens | 인증, 루틴, 운동 수행, 캘린더, 분석 리포트, 커뮤니티 등 사용자 화면과 입력 흐름 |
+| Riverpod Providers | 화면에서 사용하는 상태와 비동기 조회 관리. 운동 기록 변경 후 관련 캘린더·목록·대시보드 데이터를 갱신 |
+| Repositories & Models | 기능별 API 요청과 응답 역직렬화, 운동 세션·리포트 등 도메인 데이터 표현 |
+| Dio & Authentication | 액세스 토큰 첨부, 동시 요청의 토큰 갱신 공유, 원래 요청 재시도, 세션 만료 상태 전달 |
+| Navigation & Theme | AuthGate와 Navigator/MaterialPageRoute 기반 화면 이동, Material 3 테마와 공통 컴포넌트 스타일 적용 |
+
+운동 완료 시 신규 기록을 저장하거나 예정된 운동을 완료 처리한 뒤 AI 리포트 생성을 요청합니다. 운동 기록과 AI 리포트는 별도로 조회하므로, AI 생성에 실패해도 저장된 운동 기록은 리포트 화면에서 확인할 수 있습니다. 생성 대기·오류 상태와 재생성 가능한 오류에 대한 안내는 AI 영역에서 처리합니다.
+
+<br>
+
+## AI Report Generation
+
+실시간 자세 측정은 기기 내부에서 수행하고, 운동 후 리포트는 저장된 운동 기록과 측정 요약을 이용해 생성합니다. 앱은 운동별 ID·이름, 측정 프레임 수, 측정된 정확도와 자세 문제 횟수를 Spring Boot에 전달합니다. 측정 데이터가 없는 운동의 정확도는 빈 값으로 처리합니다.
+
+### 생성 및 조회 흐름
+
+아래는 저장된 AI 리포트가 없는 운동 세션의 생성 흐름입니다. 이미 생성된 리포트가 있으면 저장된 결과를 재사용합니다.
+
+```mermaid
+sequenceDiagram
+  participant App as Flutter App
+  participant API as Spring Boot
+  participant AI as FastAPI
+  participant LLM as Gemini
+  participant DB as MySQL
+
+  App->>API: 운동 기록 저장 또는 예정 운동 완료
+  API-->>App: 운동 세션 ID
+  App->>API: POST /workouts/{sessionId}/ai-report
+  Note over API: 소유권과 생성 정책·사용량 확인
+  API->>AI: 세트 기록·이전 기록·자세 요약·사용자 맥락
+  Note over AI: 운동 수치와 이전 기록 변화 계산
+  AI->>LLM: 계산된 분석과 응답 구조를 포함한 생성 요청
+  LLM-->>AI: 구조화된 코칭 문장
+  Note over AI: 응답 구조·표현 검사와 정규화
+  AI-->>API: 분석 리포트와 생성 메타데이터
+  API->>DB: 리포트 저장
+  API-->>App: 생성 결과
+  App->>API: GET /workouts/{sessionId}/ai-report
+  API-->>App: 저장된 리포트 조회
+```
+
+Spring Boot는 저장된 세트·중량·횟수, 이전 운동 기록과 사용자 맥락을 보강합니다. FastAPI의 Python 분석 모듈이 운동량과 기록 변화를 계산하고, Gemini가 이를 한국어 코칭 문장으로 정리합니다. 생성 결과와 함께 생성 출처, 모델명, 프롬프트 버전, 대체 결과 사용 사유를 저장합니다.
+
+| 입력과 응답 유형 | 리포트 구성 |
+| --- | --- |
+| 자세 측정 데이터가 있는 운동 | 실제 측정값에 기반한 자세 피드백과 운동 기록 분석 |
+| 자세 측정 데이터가 없는 운동 | 세트·횟수·중량 등 기록을 바탕으로 분석. 측정하지 않은 자세 점수는 표시하지 않음 |
+| 자세 측정 없이 추천 루틴 모드로 응답한 경우 | 서버가 제공한 후보 운동을 바탕으로 다음 운동을 제안하고, 앱에서 내일 계획에 추가할 수 있도록 표시 |
+
+일반 코칭 리포트는 전체 피드백, 기록 기반 분석, 이전 기록과의 변화, 측정된 운동의 자세 분석을 응답에 맞게 보여줍니다. 추천 루틴 모드에서는 추천 내용을 중심으로 화면을 구성합니다.
+
+### 생성 품질과 오류 처리
+
+- AI 응답의 JSON 구조와 문장 표현을 검사합니다. 검사에 실패하면 총 두 차례까지 생성하고, 유효한 응답을 얻지 못하면 규칙 기반 리포트를 구성합니다. AI 서버에서 Gemini를 명시적으로 비활성화한 경우에도 규칙 기반 결과를 사용합니다.
+- FastAPI는 공급자 설정 누락·일반 호출 오류를 503, 생성 시간 초과를 504로 Spring Boot에 반환합니다. Spring Boot는 이를 도메인 오류로 변환하고, 앱은 운동 기록을 유지하면서 AI 영역의 오류와 재시도 가능 여부를 안내합니다.
+- 서비스의 리포트 생성 on/off 및 사용자별·전체 일일 사용량은 Spring Boot에서 관리합니다. 자세 측정 데이터가 없는 세션에 대해 서버가 추천 후보를 전달하며, 추천 루틴은 해당 후보와 응답에 따라 제공 여부가 달라집니다.
+
+상세 요청·응답과 오류 정책은 [API 명세서](./docs/API_spec.md)를 참고하세요.
+
+<br>
+
 ## Technical Highlights
 
 - 온디바이스 자세 추적과 서버 기반 생성형 분석을 분리했습니다. 실시간 코칭은 모바일에서 즉시 처리하고, 비용이 큰 AI 리포트 생성은 운동 종료 후 서버에서 제어합니다.
@@ -198,7 +266,7 @@ flowchart TB
 
 ### 2. 생성형 AI 응답 품질, 실패, 비용 제어
 
-AI 리포트는 외부 LLM 호출에 의존하므로 timeout, 빈 응답, 형식 오류, 비용 증가 문제가 생길 수 있습니다. FastAPI 서버는 요청 데이터를 Pydantic 모델로 검증하고, Gemini 응답을 정해진 JSON 형태로 정규화합니다. Spring Boot는 사용자별 일일 제한과 전체 일일 제한을 먼저 확인하고, WebClient timeout과 FastAPI 오류 코드를 도메인 에러로 매핑합니다. Gemini 호출이 비활성화되거나 실패하는 경우에도 규칙 기반 fallback 리포트를 생성해 사용자가 빈 화면을 보지 않도록 했습니다.
+AI 리포트는 외부 LLM 호출에 의존하므로 timeout, 빈 응답, 형식 오류, 비용 증가 문제가 생길 수 있습니다. FastAPI 서버는 요청 데이터를 Pydantic 모델로 검증하고, Gemini 응답을 정해진 JSON 형태로 정규화합니다. Spring Boot는 사용자별 일일 제한과 전체 일일 제한을 먼저 확인하고, WebClient timeout과 FastAPI 오류 코드를 도메인 에러로 매핑합니다. AI 서버에서 Gemini가 명시적으로 비활성화되었거나, 응답 형식·문장 품질 검증에 두 차례 모두 실패하면 규칙 기반 fallback 리포트를 구성합니다. 공급자 설정·호출 오류와 시간 초과는 별도 오류로 전달하며, 앱은 저장된 운동 기록과 AI 오류 상태를 나누어 표시합니다.
 
 ### 3. 운영 환경과 로컬 개발 환경의 저장소 차이
 
